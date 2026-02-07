@@ -1,0 +1,45 @@
+#Backend 
+
+backend/venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/**/*.pyo
+backend/**/*.pyd
+backend/.env
+backend/.env.*
+
+
+# Frontend 
+
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.*
+
+
+# Logs
+
+*.log
+nohup.out
+output.log
+
+
+# Editor
+
+*.save
+*.save.*
+.DS_Store
+.vscode/
+.idea/
+
+
+# Python tooling
+
+.pytest_cache/
+.mypy_cache/
+
+
+# Misc
+
+coverage/
+dist/
