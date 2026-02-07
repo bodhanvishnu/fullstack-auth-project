@@ -48,6 +48,10 @@ function Login() {
 
           <button className="auth-button" type="submit">Login</button>
         </form>
+       <p className="auth-link">
+        New user?{" "}
+        <span onClick={() => navigate("/signup")}>Signup</span>
+      </p>
       </div>
     </div>
   );

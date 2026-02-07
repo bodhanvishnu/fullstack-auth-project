@@ -40,3 +40,13 @@ input {
 button:hover {
   background-color: dark blue;
 }
+.auth-link {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.auth-link span {
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 500;
+}
