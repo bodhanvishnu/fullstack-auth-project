@@ -1,109 +1,142 @@
-# Fullstack Authentication System (Flask + React)
+#Fullstack Auth System (Flask + React)
 
-This project is a production-ready authentication system built using **Flask** for the backend and **React** for the frontend. It implements **JWT-based authentication** along with **role-based access control (RBAC)** and follows a clean, modular backend structure.
+A production-ready authentication and authorization system built with Flask and React, featuring JWT-based authentication, role-based access control (RBAC), and a secure deployment behind Nginx with HTTPS.
+This project demonstrates end-to-end ownership: backend APIs, frontend integration, deployment, and infrastructure decisions.
 
-The backend is deployed using **Gunicorn** on a DigitalOcean server, and the application is live.
+#Live Demo
 
-Live application:  
-http://159.65.145.247:3001/
+Frontend (HTTPS):
+https://fullstack-auth.duckdns.org
 
----
+#Tech Stack
+#Backend
+Python, Flask
+Flask-JWT-Extended (access & refresh tokens)
+MySQL
+Gunicorn (WSGI server)
+Nginx (reverse proxy)
 
-## Why this project
+#Frontend
+React
+Axios
+React Router
+Plain CSS (minimal, clean UI)
+Infrastructure
+DigitalOcean VPS
+Nginx reverse proxy
+HTTPS via Certbot (Let’s Encrypt)
+DuckDNS (free domain)
 
-Most applications need a solid authentication layer before anything else.  
-This project focuses on building that foundation properly:
+#Features
+Authentication
+User signup and login
+Password hashing
+JWT access tokens
+JWT refresh tokens
+Protected routes using @jwt_required
+Authorization (RBAC)
+Roles stored as JWT claims
+Role-based route protection via decorators
+Admin-only endpoints
+User-specific endpoints
 
-- Clear separation between authentication, authorization, and business logic
-- Token-based auth suitable for frontend-backend separation
-- A structure that can scale as features grow
+#Frontend
+Login and Signup pages
+Dashboard with user profile
+Admin dashboard with all users list
+Protected routes based on authentication state
+Token-based API access
 
-The goal was to build something realistic, not a demo-only project.
+#Deployment
+Backend served via Gunicorn
+Frontend served as a static build via Nginx
+SSL termination at Nginx
+Backend APIs proxied internally (/auth, /user, /admin)
+No direct exposure of Gunicorn to the internet
 
----
+#API Routes Overview
+Auth
+POST /auth/signup
+POST /auth/login
+POST /auth/refresh
 
-## Core Features
+User
 
-### Backend (Flask)
-- JWT-based authentication
-- Role-Based Access Control (RBAC)
-- Modular architecture using routes, services, and utilities
-- Centralized auth and role validation logic
-- Designed for extension (more roles, permissions, or services)
+GET /user/dashboard
+GET /user/profile
 
-### Frontend (React)
-- Login and signup flow
-- Token-based session handling
-- Protected routes based on authentication state
-- Communicates with Flask APIs
+Admin
 
----
+GET /admin/dashboard
+GET /admin/get-all-users
 
-## Tech Stack
-
-- Backend: Flask (Python)
-- Frontend: React
-- Authentication: JWT
-- Deployment: Gunicorn
-- Server: DigitalOcean
-
----
-
-## Project Structure
-
-fullstack-auth-project/
-├── backend/
-│ ├── app.py
-│ ├── routes/ # API routes (auth, user)
-│ ├── services/ # Business logic
-│ ├── utils/ # Auth & RBAC helpers
-│ └── db/ # Database connections
-├── frontend/
-│ ├── src/ # React source code
-│ ├── public/
-│ ├── package.json
-│ └── package-lock.json
-└── .gitignore
+Architecture Overview
+Browser (HTTPS)
+   |
+   v
+Nginx (SSL termination)
+   |
+   +--> React build (static files)
+   |
+   +--> /auth, /user, /admin
+            |
+            v
+        Gunicorn (Flask app)
+            |
+            v
+          MySQL
 
 
-## Running Locally
+Frontend never talks to raw IPs or ports
+All API traffic goes through Nginx
+Internal communication uses HTTP, external uses HTTPS
 
-### Backend
+#Production Considerations & Trade-offs
+This project was intentionally scoped to focus on correctness, clarity, and ownership before adding scale-oriented complexity.
+Some production-level enhancements are intentionally documented but not yet implemented:
 
-```bash
+Database Connection Pooling
+Currently using direct DB connections for simplicity.
+In a higher-load environment, a connection pool (e.g., SQLAlchemy pooling) would be added to avoid exhausting MySQL connections.
+
+Refresh Token Rotation & Revocation
+Refresh tokens are implemented, but rotation and blacklist logic are not yet added.
+In production, refresh tokens would be rotated and stored hashed server-side.
+
+Centralized Error Handling
+Error handling is explicit per route.
+A global error handler would be added in a larger system for consistency.
+
+Rate Limiting / Brute Force Protection
+Not implemented yet, but would be added using middleware or a gateway-level solution.
+
+These trade-offs were made deliberately to keep the system understandable and extensible.
+
+Local Setup
+Backend
 cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-python app.py
+gunicorn -w 4 -b 127.0.0.1:5006 app:app
 
-#Frontend
+Frontend
 cd frontend
 npm install
-npm start
+npm run build
 
 
-The frontend runs on http://localhost:3000 and communicates with the Flask backend via APIs.
+Serve the build using Nginx.
 
-#Deployment
+#Why This Project
+This project exists to demonstrate:
+Understanding of authentication systems
+Secure API design
+Role-based authorization
+Real-world deployment practices
+Trade-off driven engineering decisions
+It is designed to be easy to harden rather than over-engineered from day one.
 
-The backend is deployed on a DigitalOcean server using Gunicorn for production serving.
-The application is live at:
-
-http://159.65.145.247:3000/
-
-Future Improvements
-
-This project can be extended with:
-
-Refresh tokens
-
-Password reset flow
-
-More granular permissions
-
-Rate limiting
-
-Audit logging
-
-
+Author
+Built and deployed by Vishnu
+Backend-leaning Full-Stack Developer (Flask, React)
