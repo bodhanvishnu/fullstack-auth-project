@@ -1,6 +1,6 @@
 #Fullstack Auth System (Flask + React)
 
-A production-ready authentication and authorization system built with Flask and React, featuring JWT-based authentication, role-based access control (RBAC), and a secure deployment behind Nginx with HTTPS.
+A production-style authentication and authorization system built with Flask and React, featuring JWT-based authentication, role-based access control (RBAC), and a secure deployment behind Nginx with HTTPS.
 This project demonstrates end-to-end ownership: backend APIs, frontend integration, deployment, and infrastructure decisions.
 
 #Live Demo
