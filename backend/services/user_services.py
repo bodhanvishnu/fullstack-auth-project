@@ -2,7 +2,7 @@ from db.connections import get_db_connection
 
 def get_user_by_username(username):
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
     cursor.execute(
     "SELECT * FROM users WHERE username=%s",
@@ -18,7 +18,7 @@ def get_user_by_username(username):
 
 def get_user_by_id(user_id):
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
     cursor.execute(
     "SELECT * FROM users WHERE id=%s",
@@ -34,7 +34,7 @@ def get_user_by_id(user_id):
 
 def get_all_users():
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
     cursor.execute(
     "SELECT id,username,role FROM users",

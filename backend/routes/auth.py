@@ -3,6 +3,9 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required
 from flask import Blueprint,request
 from db.connections import get_db_connection
+from extensions import limiter
+from flask_limiter.util import get_remote_address
+from services.security_logger import log_login_attempt
 
 auth_bp = Blueprint("auth",__name__)
 
@@ -44,8 +47,13 @@ def signup():
     },201
 
 @auth_bp.route("/login", methods=["POST"])
+@limiter.limit("5 per minute", key_func=get_remote_address)
+@limiter.limit("5 per minute", key_func=lambda: request.json.get("username",""))
 def login():
     data = request.get_json()
+
+    if not data:
+        return {"error":"Invalid request"},400
 
     username = data.get("username")
     password = data.get("password")
@@ -55,10 +63,8 @@ def login():
 
     user = get_user_by_username(username)
 
-    if not user:
-       return{"error":"user not found"},404
-
-    if not check_password_hash(user["password"],password):
+    if not user or not check_password_hash(user["password"],password):
+       log_login_attempt(username, success=False)
        return {"error":"Invalid credentials"},401
 
     access_token = create_access_token(
@@ -70,12 +76,15 @@ def login():
        identity=str(user["id"])
      )
 
+    log_login_attempt(username, success=True)
+
     return {
        "access_token":access_token,
        "refresh_token":refresh_token,
        "status":"login successful"
     },200 
 
+@limiter.limit("10 per minute")
 @auth_bp.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():

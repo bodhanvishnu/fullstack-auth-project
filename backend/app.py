@@ -7,11 +7,17 @@ from dotenv import load_dotenv
 import os
 from datetime import timedelta
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from extensions import limiter
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+limiter.init_app(app)
+
 
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
